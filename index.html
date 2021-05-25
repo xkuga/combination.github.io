@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Combination Algorithm</title>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <style>
+        /*Contact sectiom*/
+        .content-header{
+            font-family: 'Oleo Script', cursive;
+            color:#fcc500;
+            font-size: 45px;
+        }
+
+        .section-content{
+            text-align: center;
+
+        }
+        select {
+            color : initial !important;
+        }
+        #contact{
+
+            /*font-family: 'Teko', sans-serif;*/
+            padding-top: 60px;
+            width: 100%;
+            width: 100vw;
+            height: 100%;
+            height: 100vw; /* change it to your value depending on context*/
+            background: #3a6186; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to left, #3a6186 , #89253e); /* Chrome 10-25, Safari 5.1-6 */
+            /*background: linear-gradient(to left, #3a6186 , #89253e); !* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ *!*/
+            color : #fff;
+        }
+        .contact-section{
+            padding-top: 40px;
+        }
+        .contact-section .col-md-6{
+            width: 50%;
+        }
+
+        .form-line{
+            /*border-right: 1px solid #B29999;*/
+        }
+
+        .form-group{
+            margin-top: 10px;
+        }
+        label{
+            font-size: 1.3em;
+            line-height: 1em;
+            font-weight: normal;
+        }
+        .form-control{
+            font-size: 1.0em;
+            color: #080808;
+        }
+        textarea.form-control {
+            height: 300px;
+            resize: none;/*disables the resize function*/
+            /* margin-top: px;*/
+        }
+
+        .params {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .params input {
+            width: 100px;
+            color: black;
+        }
+
+        .submit{
+            /*font-size: 1.1em;*/
+            /*float: left;*/
+            width: 100px;
+            height: 32px;
+            background-color: transparent;
+            color: #fff;
+            margin: 0 0 4px 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<section id="contact">
+    <div class="section-content">
+        <h1 class="section-header">商品组合毛利计算</h1>
+        <h3>满减优惠</h3>
+    </div>
+    <div class="contact-section">
+        <div class="container">
+            <form>
+                <div class="col-md-12 params">
+                    组合数量 <input id="r" type="text" />
+                    满 <input id="over" type="text" />
+                    减 <input id="minus" type="text" />
+                    <button id="calc" type="button" class="btn btn-default submit">计算</button>
+                </div>
+                <div class="col-md-6 form-line">
+                    <h5>[名称,原价,成本]</h5>
+                    <div class="form-group">
+                        <select name="from" style="display: none;">
+                            <option value="en">english</option>
+                            <option value="cz">czech</option>
+                            <option value="sk">slovakia</option>
+                        </select> </div>
+                    <div class="form-group">
+
+                        <textarea  class="form-control" id="input" placeholder="输入商品，一行一个，格式: 名称,原价,成本"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>[名称...,原价,满减,实价,毛利]</h5>
+                    <div class="form-group">
+                        <select name="from" style="display: none;">
+                            <option value="en">english</option>
+                            <option value="cz">czech</option>
+                            <option value="sk">slovakia</option>
+                        </select> </div>
+                    <div class="form-group">
+
+                        <textarea  class="form-control" id="output" placeholder=""></textarea>
+                    </div>
+
+                </div>
+            </form>
+        </div></div>
+</section>
+
+<script>
+
+    /* Generated from Java with JSweet 3.0.0 - http://www.jsweet.org */
+    var Goods = /** @class */ (function () {
+        function Goods() {
+            if (this.name === undefined) {
+                this.name = null;
+            }
+            if (this.price === undefined) {
+                this.price = null;
+            }
+            if (this.cost === undefined) {
+                this.cost = null;
+            }
+            this.name = "";
+            this.price = 0.0;
+            this.cost = 0.0;
+        }
+        return Goods;
+    }());
+    Goods["__class"] = "Goods";
+    var Coupon = /** @class */ (function () {
+        function Coupon(over, minus) {
+            if (this.over === undefined) {
+                this.over = null;
+            }
+            if (this.minus === undefined) {
+                this.minus = null;
+            }
+            this.over = over;
+            this.minus = minus;
+        }
+        return Coupon;
+    }());
+    Coupon["__class"] = "Coupon";
+    var Order = /** @class */ (function () {
+        function Order() {
+            if (this.goodsList === undefined) {
+                this.goodsList = null;
+            }
+            if (this.originalPrice === undefined) {
+                this.originalPrice = null;
+            }
+            if (this.finalPrice === undefined) {
+                this.finalPrice = null;
+            }
+            if (this.cost === undefined) {
+                this.cost = null;
+            }
+            if (this.profit === undefined) {
+                this.profit = null;
+            }
+            if (this.coupon === undefined) {
+                this.coupon = null;
+            }
+            this.goodsList = ([]);
+            this.originalPrice = 0.0;
+            this.finalPrice = 0.0;
+            this.cost = 0.0;
+            this.profit = 0.0;
+            this.coupon = null;
+        }
+        Order.prototype.getProfit = function () {
+            return this.profit;
+        };
+        Order.prototype.addGoods = function (goods) {
+            /* add */ (this.goodsList.push(goods) > 0);
+        };
+        Order.prototype.submit = function () {
+            var useCoupon;
+            for (var index11901 = 0; index11901 < this.goodsList.length; index11901++) {
+                var goods = this.goodsList[index11901];
+                {
+                    this.originalPrice += goods.price;
+                    this.cost += goods.cost;
+                }
+            }
+            if (this.coupon != null) {
+                if ( /* intValue */(this.originalPrice | 0) >= this.coupon.over) {
+                    this.finalPrice = this.originalPrice - this.coupon.minus;
+                    useCoupon = true;
+                }
+                else {
+                    this.finalPrice = this.originalPrice;
+                    useCoupon = false;
+                }
+            }
+            else {
+                this.finalPrice = this.originalPrice;
+                useCoupon = false;
+            }
+            this.profit = this.finalPrice - this.cost;
+            return useCoupon;
+        };
+        return Order;
+    }());
+    Order["__class"] = "Order";
+    var Combination = /** @class */ (function () {
+        function Combination() {
+        }
+        Combination.generate = function (n, r) {
+            var combinations = ([]);
+            var combination = (function (s) { var a = []; while (s-- > 0)
+                a.push(0); return a; })(r);
+            for (var i = 0; i < r; i++) {
+                {
+                    combination[i] = i;
+                }
+                ;
+            }
+            while ((combination[r - 1] < n)) {
+                {
+                    /* add */ (combinations.push(/* clone */ combination.slice(0)) > 0);
+                    var t = r - 1;
+                    while ((t !== 0 && combination[t] === n - r + t)) {
+                        {
+                            t--;
+                        }
+                    }
+                    ;
+                    combination[t]++;
+                    for (var i = t + 1; i < r; i++) {
+                        {
+                            combination[i] = combination[i - 1] + 1;
+                        }
+                        ;
+                    }
+                }
+            }
+            ;
+            return combinations;
+        };
+        return Combination;
+    }());
+    Combination["__class"] = "Combination";
+    var Kuga = /** @class */ (function () {
+        function Kuga() {
+        }
+        Kuga.main = function (args) {
+            var goodsString = "foo,10,8\nbar,12,7\none,20,6\n";
+            var coupon = new Coupon(20, 3);
+            var result = Kuga.calc(goodsString, 2, coupon);
+            console.info(result);
+        };
+        Kuga.calc = function (goodsString, r, coupon) {
+            var goodsList = Kuga.getGoodsList(goodsString);
+            var n = goodsList.length;
+            var orderList = ([]);
+            var combList = Combination.generate(n, r);
+            for (var index11902 = 0; index11902 < combList.length; index11902++) {
+                var comb = combList[index11902];
+                {
+                    var order = new Order();
+                    for (var index11903 = 0; index11903 < comb.length; index11903++) {
+                        var i = comb[index11903];
+                        {
+                            order.addGoods(/* get */ goodsList[i]);
+                        }
+                    }
+                    order.coupon = coupon;
+                    if (order.submit()) {
+                        /* add */ (orderList.push(order) > 0);
+                    }
+                }
+            }
+            orderList.sort((a, b) => (a.profit > b.profit) ? 1 : -1);
+            var lines = ([]);
+            var p = 1;
+            var j = 0;
+            for (var index11904 = 0; index11904 < orderList.length; index11904++) {
+                var order = orderList[index11904];
+                {
+                    if (j >= 200) {
+                        break;
+                    }
+                    var columns = ([]);
+                    for (var index11905 = 0; index11905 < order.goodsList.length; index11905++) {
+                        var goods = order.goodsList[index11905];
+                        {
+                            /* add */ (columns.push(goods.name) > 0);
+                        }
+                    }
+                    /* add */ (columns.push(parseFloat(order.originalPrice.toString()).toFixed(p)) > 0);
+                    /* add */ (columns.push("-" + parseFloat(coupon.minus.toString()).toFixed(p)) > 0);
+                    /* add */ (columns.push(parseFloat(order.finalPrice.toString()).toFixed(p)) > 0);
+                    /* add */ (columns.push(parseFloat(order.cost.toString()).toFixed(p)) > 0);
+                    /* add */ (columns.push(parseFloat(order.profit.toString()).toFixed(p)) > 0);
+                    lines.push(columns.join(","));
+                }
+            }
+            return lines.join("\n");
+        };
+        Kuga.getGoodsList = function (input) {
+            var lines = input.trim().split("\n");
+            var goodsList = ([]);
+            for (var index11906 = 0; index11906 < lines.length; index11906++) {
+                var line = lines[index11906];
+                {
+                    var parts = line.trim().split(",");
+                    var goods = new Goods();
+                    goods.name = parts[0];
+                    goods.price = /* parseDouble */ parseFloat(parts[1]);
+                    goods.cost = /* parseDouble */ parseFloat(parts[2]);
+                    /* add */ (goodsList.push(goods) > 0);
+                }
+            }
+            return goodsList;
+        };
+        return Kuga;
+    }());
+    Kuga["__class"] = "Kuga";
+    Kuga.main(null);
+
+    $("#calc").click(function() {
+        var r = $("#r").val();
+        var over = $("#over").val();
+        var minus = $("#minus").val();
+        var input = $("#input").val();
+
+        var coupon = new Coupon(over, minus);
+        var output = Kuga.calc(input, r, coupon);
+
+        $("#output").val(output);
+    });
+
+</script>
+
+</body>
+</html>
+
